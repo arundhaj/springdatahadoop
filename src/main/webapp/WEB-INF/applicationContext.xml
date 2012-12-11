@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:hdp="http://www.springframework.org/schema/hadoop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+			http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+			http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.arundhaj"></context:component-scan>
+
+	<mvc:annotation-driven />
+
+	<mvc:resources location="/resources/" mapping="/resources/**" />
+
+	<bean id="hadoopProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean"
+		p:location="/WEB-INF/hadoop.properties" />
+
+	<context:property-placeholder properties-ref="hadoopProperties"/>
+	
+	<hdp:configuration>
+		fs.default.name=${hd.fs}
+		hadoop.tmp.dir=${hd.tmp.dir}
+	</hdp:configuration>
+	
+	<hdp:hbase-configuration stop-proxy="false" delete-connection="true">
+		hbase.rootdir=${hbase.rootdir}
+	</hdp:hbase-configuration>
+	
+	<bean id="myHbaseTemplate" class="org.springframework.data.hadoop.hbase.HbaseTemplate" p:configuration-ref="hbaseConfiguration"></bean>
+	
+</beans>
